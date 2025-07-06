@@ -328,7 +328,7 @@ export default function EnhancedAbout() {
         </div>
         
         <p className="text-2xl text-amber-100 max-w-4xl mx-auto leading-relaxed">
-          Where Victorian ingenuity meets cutting-edge technology. Diversion 2026 is not just a convention—it's a
+          Where Victorian ingenuity meets cutting-edge technology. Diversion 2026 is not just a convention—it&apos;s a
           journey through time and innovation, bringing together the greatest minds in technology, art, and design.
         </p>
       </div>
@@ -428,7 +428,7 @@ export default function EnhancedAbout() {
           </h3>
           <p className="text-xl text-amber-100 mb-8 max-w-2xl mx-auto">
             Join us for three extraordinary days of innovation, discovery, and connection. 
-            Be part of the steampunk revolution that's redefining technology.
+            Be part of the steampunk revolution that&apos;s redefining technology.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-xl">

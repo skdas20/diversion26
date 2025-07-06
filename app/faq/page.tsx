@@ -97,7 +97,7 @@ export default function FAQPage() {
             </div>
             <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-red-500 mx-auto mb-8"></div>
             <p className="text-xl text-amber-100 max-w-3xl mx-auto leading-relaxed">
-              Find answers to the most commonly asked questions about Diversion 2026. Can't find what you're looking
+              Find answers to the most commonly asked questions about Diversion 2026. Can&apos;t find what you&apos;re looking
               for? Contact our support team!
             </p>
           </div>
@@ -113,7 +113,7 @@ export default function FAQPage() {
           <div className="mt-16 bg-gradient-to-r from-orange-800/40 to-red-900/40 rounded-2xl p-8 border border-orange-600/30 text-center">
             <h2 className="text-2xl font-bold text-amber-200 mb-4">Still Have Questions?</h2>
             <p className="text-amber-100 mb-6">
-              Our support team is here to help! Reach out to us and we'll get back to you within 24 hours.
+              Our support team is here to help! Reach out to us and we&apos;ll get back to you within 24 hours.
             </p>
             <div className="space-x-4">
               <button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">

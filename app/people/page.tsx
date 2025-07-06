@@ -1,5 +1,6 @@
 import Navigation from "@/components/navigation"
 import { Users, Mail, Linkedin, Twitter } from "lucide-react"
+import Image from "next/image"
 
 export default function PeoplePage() {
   const organizers = [
@@ -93,10 +94,14 @@ export default function PeoplePage() {
                   key={index}
                   className="bg-gradient-to-br from-amber-800/40 to-orange-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-600/30 hover:border-orange-400/50 transition-all duration-300 transform hover:scale-105 text-center"
                 >
-                  <img
+                  <Image
                     src={person.image || "/placeholder.svg"}
                     alt={person.name}
+                    width={128}
+                    height={128}
                     className="w-32 h-32 rounded-full border-4 border-orange-400/50 mx-auto mb-6"
+                    priority={index < 2}
+                    unoptimized={person.image?.startsWith("/placeholder")}
                   />
                   <h3 className="text-xl font-bold text-amber-200 mb-2">{person.name}</h3>
                   <p className="text-orange-400 font-semibold mb-4">{person.title}</p>
@@ -131,10 +136,14 @@ export default function PeoplePage() {
                   key={index}
                   className="bg-gradient-to-br from-orange-800/30 to-red-900/30 backdrop-blur-sm rounded-xl p-6 border border-orange-600/30 hover:border-red-400/50 transition-all duration-300 text-center"
                 >
-                  <img
+                  <Image
                     src={advisor.image || "/placeholder.svg"}
                     alt={advisor.name}
+                    width={96}
+                    height={96}
                     className="w-24 h-24 rounded-full border-3 border-red-400/50 mx-auto mb-4"
+                    priority={index < 2}
+                    unoptimized={advisor.image?.startsWith("/placeholder")}
                   />
                   <h3 className="text-lg font-bold text-amber-200 mb-1">{advisor.name}</h3>
                   <p className="text-red-400 font-semibold text-sm mb-1">{advisor.title}</p>
@@ -149,7 +158,7 @@ export default function PeoplePage() {
           <div className="bg-gradient-to-r from-amber-800/30 to-orange-800/30 rounded-2xl p-8 border border-amber-600/30 text-center">
             <h2 className="text-3xl font-bold text-amber-200 mb-6">Join Our Volunteer Team</h2>
             <p className="text-amber-100 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Diversion 2026 wouldn't be possible without our amazing volunteers. Join our team and help create an
+              Diversion 2026 wouldn&apos;t be possible without our amazing volunteers. Join our team and help create an
               unforgettable experience while gaining valuable event management experience and networking opportunities.
             </p>
 

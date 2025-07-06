@@ -1,5 +1,6 @@
 import Navigation from "@/components/navigation"
 import { Users, Star, Award, Briefcase } from "lucide-react"
+import Image from "next/image"
 
 export default function LineupPage() {
   const speakers = [
@@ -126,10 +127,14 @@ export default function LineupPage() {
                     className="bg-gradient-to-br from-amber-800/40 to-orange-900/40 backdrop-blur-sm rounded-2xl p-8 border border-amber-600/30 hover:border-orange-400/50 transition-all duration-300 transform hover:scale-105"
                   >
                     <div className="flex items-start space-x-6">
-                      <img
+                      <Image
                         src={speaker.image || "/placeholder.svg"}
                         alt={speaker.name}
+                        width={96}
+                        height={96}
                         className="w-24 h-24 rounded-full border-4 border-orange-400/50"
+                        priority={index < 2}
+                        unoptimized={speaker.image?.startsWith("/placeholder")}
                       />
                       <div className="flex-1">
                         <h3 className="text-2xl font-bold text-amber-200 mb-2">{speaker.name}</h3>
@@ -168,10 +173,14 @@ export default function LineupPage() {
                     className="bg-gradient-to-br from-amber-800/30 to-orange-900/30 backdrop-blur-sm rounded-xl p-6 border border-amber-600/30 hover:border-orange-400/50 transition-all duration-300 transform hover:scale-105"
                   >
                     <div className="text-center mb-4">
-                      <img
+                      <Image
                         src={speaker.image || "/placeholder.svg"}
                         alt={speaker.name}
+                        width={80}
+                        height={80}
                         className="w-20 h-20 rounded-full border-3 border-orange-400/50 mx-auto mb-4"
+                        priority={index < 2}
+                        unoptimized={speaker.image?.startsWith("/placeholder")}
                       />
                       <h3 className="text-xl font-bold text-amber-200 mb-1">{speaker.name}</h3>
                       <p className="text-orange-400 font-semibold text-sm mb-1">{speaker.title}</p>
@@ -233,7 +242,7 @@ export default function LineupPage() {
           <div className="mt-16 bg-gradient-to-r from-amber-800/40 to-orange-800/40 rounded-2xl p-8 border border-amber-600/30 text-center">
             <h2 className="text-3xl font-bold text-amber-200 mb-4">Ready to Learn from the Best?</h2>
             <p className="text-amber-100 mb-6 max-w-2xl mx-auto">
-              Don't miss your chance to learn from industry leaders and connect with fellow innovators. Register now to
+              Don&apos;t miss your chance to learn from industry leaders and connect with fellow innovators. Register now to
               secure your spot at Diversion 2026.
             </p>
             <button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105">

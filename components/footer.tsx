@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import Link from "next/link"
 
 export default function SteampunkFooter() {
   return (
@@ -35,11 +36,11 @@ export default function SteampunkFooter() {
           <span className="text-2xl font-bold text-amber-200 tracking-wider drop-shadow-lg">Diversion 2026</span>
         </div>
         <nav className="flex flex-wrap gap-6 text-amber-100 font-medium text-lg">
-          <a href="/" className="hover:text-orange-400 transition-colors duration-200">Home</a>
-          <a href="/guide" className="hover:text-orange-400 transition-colors duration-200">Guide</a>
-          <a href="/faq" className="hover:text-orange-400 transition-colors duration-200">FAQ</a>
-          <a href="/lineup" className="hover:text-orange-400 transition-colors duration-200">Lineup</a>
-          <a href="/people" className="hover:text-orange-400 transition-colors duration-200">People</a>
+          <Link href="/" className="hover:text-orange-400 transition-colors duration-200">Home</Link>
+          <Link href="/guide" className="hover:text-orange-400 transition-colors duration-200">Guide</Link>
+          <Link href="/faq" className="hover:text-orange-400 transition-colors duration-200">FAQ</Link>
+          <Link href="/lineup" className="hover:text-orange-400 transition-colors duration-200">Lineup</Link>
+          <Link href="/people" className="hover:text-orange-400 transition-colors duration-200">People</Link>
           <a href="/contact" className="hover:text-orange-400 transition-colors duration-200">Contact</a>
         </nav>
         <div className="text-amber-300 text-sm md:text-right">

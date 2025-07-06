@@ -306,7 +306,7 @@ function SuccessAnimation({ show }: { show: boolean }) {
         <h3 className="text-3xl font-bold text-amber-200 mb-4">Message Sent!</h3>
         <p className="text-amber-100 mb-6">
           Your message has been transmitted through our steampunk telegraph system. 
-          We'll respond faster than a steam-powered locomotive!
+          We&apos;ll respond faster than a steam-powered locomotive!
         </p>
         <div className="flex justify-center space-x-2">
           {Array.from({ length: 3 }).map((_, i) => (

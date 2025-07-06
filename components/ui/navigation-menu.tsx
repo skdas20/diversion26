@@ -220,12 +220,6 @@ export default function Navigation() {
 
   return (
     <>
-      {/* Google Fonts Import */}
-      <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
-      
       <nav
         className={`fixed top-0 w-full z-50 transition-all duration-500 ${
           scrolled

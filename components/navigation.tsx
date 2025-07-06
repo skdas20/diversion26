@@ -64,16 +64,16 @@ export default function Navigation() {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+      className={`fixed top-0 w-full z-50 transition-all duration-500 overflow-x-hidden ${
         scrolled
           ? "bg-gradient-to-r from-stone-900/95 via-neutral-800/95 to-zinc-900/95 backdrop-blur-md shadow-2xl border-b border-amber-600/20"
           : "bg-transparent"
       }`}
     >
-      <div className="px-2 sm:px-4 md:px-6 w-full overflow-x-hidden">
-        <div className="flex items-center justify-between h-20 md:h-28 py-3 md:py-4 w-full">
+      <div className="px-2 sm:px-4 md:px-6 w-full max-w-full overflow-x-hidden">
+        <div className="flex items-center justify-between h-20 md:h-28 py-3 md:py-4 w-full max-w-full">
           {/* Enhanced Logo - now clickable to go home */}
-          <Link href="/" className="flex items-center space-x-2 md:space-x-3 group min-w-0">
+          <Link href="/" className="flex items-center space-x-2 md:space-x-3 group min-w-0 flex-shrink-0">
             <div className="relative">
               <Settings
                 className="h-8 w-8 md:h-12 md:w-12 text-amber-400 transition-all duration-300 group-hover:rotate-180"
@@ -92,11 +92,10 @@ export default function Navigation() {
             </div>
           </Link>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - Fixed positioning */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden relative z-50 p-2 rounded-lg bg-stone-800/40 text-amber-400 hover:text-amber-300 transition-colors ml-2"
-            style={{ right: 0 }}
+            className="md:hidden fixed top-6 right-4 z-50 p-3 rounded-lg bg-stone-800/90 backdrop-blur-sm text-amber-400 hover:text-amber-300 transition-all duration-300 shadow-lg border border-amber-600/30"
           >
             {isMobileMenuOpen ? (
               <X className="h-6 w-6" />
@@ -144,13 +143,13 @@ export default function Navigation() {
 
         {/* Mobile Menu */}
         <div
-          className={`md:hidden fixed inset-0 bg-gradient-to-b from-stone-900/98 via-neutral-800/98 to-zinc-900/98 backdrop-blur-md z-40 transition-all duration-300 w-full overflow-x-hidden` +
+          className={`md:hidden fixed inset-0 bg-gradient-to-b from-stone-900/98 via-neutral-800/98 to-zinc-900/98 backdrop-blur-md z-40 transition-all duration-300 w-full max-w-full overflow-x-hidden` +
             (isMobileMenuOpen
               ? " opacity-100 pointer-events-auto"
               : " opacity-0 pointer-events-none")
           }
         >
-          <div className="flex flex-col pt-24 px-6 space-y-4">
+          <div className="flex flex-col pt-24 px-6 space-y-4 max-w-full overflow-x-hidden">
             {/* Home Navigation Items */}
             <div className="space-y-2">
               <h3 className="text-amber-400 font-semibold text-sm uppercase tracking-wider mb-4">

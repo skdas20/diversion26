@@ -36,7 +36,7 @@ export default function AnimatedAbout() {
           transition={{ duration: 0.8, delay: 0.5 }}
           className="text-base xs:text-lg sm:text-xl text-amber-100 max-w-full sm:max-w-3xl mx-auto leading-relaxed px-1 sm:px-0"
         >
-          Where Victorian ingenuity meets cutting-edge technology. Diversion 2026 is not just a convention—it's a
+          Where Victorian ingenuity meets cutting-edge technology. Diversion 2026 is not just a convention—it&apos;s a
           journey through time and innovation, bringing together the greatest minds in technology, art, and design.
         </motion.p>
       </div>
