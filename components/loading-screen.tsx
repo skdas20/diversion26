@@ -550,8 +550,16 @@ function AnimatedTitle({ loadingProgress }: { loadingProgress: number }) {
 export default function LoadingScreen() {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingPhase, setLoadingPhase] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Ensure component only renders on client
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
+    if (!isMounted) return;
+    
     const interval = setInterval(() => {
       setLoadingProgress((prev) => {
         if (prev >= 100) return 100;
@@ -569,7 +577,16 @@ export default function LoadingScreen() {
     }, 40);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isMounted]);
+
+  // Show a simple loading screen until component is mounted
+  if (!isMounted) {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-b from-amber-900/20 via-stone-900 to-zinc-900 flex items-center justify-center z-[9999]">
+        <div className="text-amber-400 text-2xl font-bold">Loading...</div>
+      </div>
+    );
+  }
 
   const loadingMessages = [
     "Igniting the furnace...",
@@ -580,7 +597,7 @@ export default function LoadingScreen() {
   ];
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-b from-amber-900/20 via-stone-900 to-zinc-900 flex items-center justify-center z-50 overflow-hidden">
+    <div className="fixed inset-0 bg-gradient-to-b from-amber-900/20 via-stone-900 to-zinc-900 flex items-center justify-center z-[9999] overflow-hidden">
       {/* Animated background pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,107,53,0.1),transparent_70%)]"></div>

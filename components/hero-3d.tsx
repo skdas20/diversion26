@@ -1,29 +1,29 @@
 "use client"
 
 import { Canvas } from "@react-three/fiber"
-import { OrbitControls, Float, Sparkles, Stars } from "@react-three/drei"
+import { OrbitControls, Float, Sparkles, Stars, Environment } from "@react-three/drei"
 import { useRef, useMemo, Suspense } from "react"
 import { useFrame } from "@react-three/fiber"
 import type * as THREE from "three"
 import * as THREE_NAMESPACE from "three"
 
-// Atmospheric steam particles for the observatory
+// Enhanced atmospheric steam particles
 function ObservatoryMist({ position }: { position: [number, number, number] }) {
   const meshRef = useRef<THREE.Points>(null)
-  const particleCount = 40
+  const particleCount = 60
 
   const particles = useMemo(() => {
     const positions = new Float32Array(particleCount * 3)
     const velocities = new Float32Array(particleCount * 3)
 
     for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 6
-      positions[i * 3 + 1] = Math.random() * 8
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 6
+      positions[i * 3] = (Math.random() - 0.5) * 8
+      positions[i * 3 + 1] = Math.random() * 10
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 8
 
-      velocities[i * 3] = (Math.random() - 0.5) * 0.02
-      velocities[i * 3 + 1] = Math.random() * 0.08 + 0.02
-      velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.02
+      velocities[i * 3] = (Math.random() - 0.5) * 0.03
+      velocities[i * 3 + 1] = Math.random() * 0.1 + 0.03
+      velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.03
     }
 
     return { positions, velocities }
@@ -35,14 +35,14 @@ function ObservatoryMist({ position }: { position: [number, number, number] }) {
       const time = state.clock.elapsedTime
 
       for (let i = 0; i < particleCount; i++) {
-        positions[i * 3] += particles.velocities[i * 3] + Math.sin(time * 0.5 + i) * 0.005
+        positions[i * 3] += particles.velocities[i * 3] + Math.sin(time * 0.5 + i) * 0.008
         positions[i * 3 + 1] += particles.velocities[i * 3 + 1]
-        positions[i * 3 + 2] += particles.velocities[i * 3 + 2] + Math.cos(time * 0.5 + i) * 0.005
+        positions[i * 3 + 2] += particles.velocities[i * 3 + 2] + Math.cos(time * 0.5 + i) * 0.008
 
-        if (positions[i * 3 + 1] > 12) {
+        if (positions[i * 3 + 1] > 15) {
           positions[i * 3 + 1] = 0
-          positions[i * 3] = (Math.random() - 0.5) * 6
-          positions[i * 3 + 2] = (Math.random() - 0.5) * 6
+          positions[i * 3] = (Math.random() - 0.5) * 8
+          positions[i * 3 + 2] = (Math.random() - 0.5) * 8
         }
       }
 
@@ -56,17 +56,42 @@ function ObservatoryMist({ position }: { position: [number, number, number] }) {
         <bufferAttribute attach="attributes-position" count={particleCount} array={particles.positions} itemSize={3} />
       </bufferGeometry>
       <pointsMaterial 
-        size={0.03} 
+        size={0.04} 
         color="#8B7D6B" 
         transparent 
-        opacity={0.4} 
+        opacity={0.5} 
         sizeAttenuation 
       />
     </points>
   )
 }
 
-// Enhanced central brass orrery with complex mechanisms
+// Enhanced atmospheric effects
+function EnhancedAtmosphere() {
+  return (
+    <>
+      {/* Floating dust motes in light beams */}
+      <Sparkles count={500} scale={60} size={0.5} speed={0.005} color="#F5DEB3" opacity={0.3} />
+      
+      {/* Mystical energy particles */}
+      <Sparkles count={200} scale={40} size={1.2} speed={0.02} color="#9370DB" opacity={0.6} />
+      
+      {/* Steam from mechanisms */}
+      {Array.from({ length: 6 }).map((_, i) => (
+        <ObservatoryMist
+          key={i}
+          position={[
+            Math.cos((i * Math.PI * 2) / 6) * 5,
+            2 + Math.random() * 3,
+            Math.sin((i * Math.PI * 2) / 6) * 5,
+          ]}
+        />
+      ))}
+    </>
+  )
+}
+
+// Enhanced central brass orrery with photorealistic materials
 function BrassOrrery({ position }: { position: [number, number, number] }) {
   const orreryRef = useRef<THREE.Group>(null)
   const planetsRef = useRef<THREE.Group>(null)
@@ -88,41 +113,52 @@ function BrassOrrery({ position }: { position: [number, number, number] }) {
     }
   })
 
-  const materials = useMemo(() => ({
-    brass: new THREE_NAMESPACE.MeshStandardMaterial({
+  const enhancedMaterials = useMemo(() => ({
+    masterBrass: new THREE_NAMESPACE.MeshPhysicalMaterial({
       color: "#B8860B",
-      metalness: 0.9,
-      roughness: 0.2,
+      metalness: 0.95,
+      roughness: 0.15,
+      clearcoat: 0.8,
+      clearcoatRoughness: 0.1,
       emissive: "#8B6914",
+      emissiveIntensity: 0.2,
+    }),
+    
+    antiqueBrass: new THREE_NAMESPACE.MeshPhysicalMaterial({
+      color: "#8B6914",
+      metalness: 0.9,
+      roughness: 0.25,
+      clearcoat: 0.6,
+      clearcoatRoughness: 0.2,
+      emissive: "#654321",
       emissiveIntensity: 0.15,
     }),
-    darkBrass: new THREE_NAMESPACE.MeshStandardMaterial({
-      color: "#8B6914",
-      metalness: 0.8,
-      roughness: 0.3,
-      emissive: "#654321",
-      emissiveIntensity: 0.1,
-    }),
-    copper: new THREE_NAMESPACE.MeshStandardMaterial({
+    
+    polishedCopper: new THREE_NAMESPACE.MeshPhysicalMaterial({
       color: "#B87333",
-      metalness: 0.8,
-      roughness: 0.3,
+      metalness: 0.92,
+      roughness: 0.18,
+      clearcoat: 0.9,
+      clearcoatRoughness: 0.05,
       emissive: "#8B4513",
-      emissiveIntensity: 0.08,
+      emissiveIntensity: 0.12,
     }),
-    bronze: new THREE_NAMESPACE.MeshStandardMaterial({
+    
+    bronze: new THREE_NAMESPACE.MeshPhysicalMaterial({
       color: "#CD7F32",
       metalness: 0.85,
       roughness: 0.25,
+      clearcoat: 0.7,
+      clearcoatRoughness: 0.15,
     }),
   }), [])
 
   return (
     <group ref={orreryRef} position={position}>
-      {/* Ornate pedestal base */}
-      <mesh position={[0, -1.5, 0]}>
+      {/* Ornate pedestal base with enhanced details */}
+      <mesh position={[0, -1.5, 0]} castShadow receiveShadow>
         <cylinderGeometry args={[2, 2.5, 3, 16]} />
-        <primitive object={materials.darkBrass} />
+        <primitive object={enhancedMaterials.antiqueBrass} />
       </mesh>
 
       {/* Decorative base carvings */}
@@ -134,23 +170,24 @@ function BrassOrrery({ position }: { position: [number, number, number] }) {
             -1,
             Math.sin((i * Math.PI * 2) / 8) * 2.2,
           ]}
+          castShadow
         >
           <boxGeometry args={[0.3, 1, 0.3]} />
-          <primitive object={materials.bronze} />
+          <primitive object={enhancedMaterials.bronze} />
         </mesh>
       ))}
 
       {/* Main support column with intricate details */}
-      <mesh position={[0, 1, 0]}>
+      <mesh position={[0, 1, 0]} castShadow receiveShadow>
         <cylinderGeometry args={[0.4, 0.4, 5, 16]} />
-        <primitive object={materials.brass} />
+        <primitive object={enhancedMaterials.masterBrass} />
       </mesh>
 
       {/* Decorative rings on column */}
       {[0, 2, 4].map((y, i) => (
-        <mesh key={i} position={[0, y, 0]}>
+        <mesh key={i} position={[0, y, 0]} castShadow>
           <torusGeometry args={[0.5, 0.1, 8, 16]} />
-          <primitive object={materials.copper} />
+          <primitive object={enhancedMaterials.polishedCopper} />
         </mesh>
       ))}
 
@@ -165,53 +202,54 @@ function BrassOrrery({ position }: { position: [number, number, number] }) {
               Math.sin((i * Math.PI * 2) / 6) * 1.5,
             ]}
             rotation={[Math.PI / 2, 0, 0]}
+            castShadow
           >
             <cylinderGeometry args={[0.3, 0.3, 0.1, 12]} />
-            <primitive object={materials.brass} />
+            <primitive object={enhancedMaterials.masterBrass} />
           </mesh>
         ))}
       </group>
 
       {/* Rotating planetary system */}
       <group ref={planetsRef} position={[0, 4, 0]}>
-        {/* Central sun with glow */}
-        <mesh>
+        {/* Central sun with enhanced glow */}
+        <mesh castShadow>
           <sphereGeometry args={[0.5, 20, 20]} />
           <meshStandardMaterial 
             color="#DAA520" 
             emissive="#FFD700" 
-            emissiveIntensity={0.4}
+            emissiveIntensity={0.6}
           />
         </mesh>
 
         {/* Orbital rings with enhanced details */}
         {[2.5, 4, 5.5, 7].map((radius, i) => (
           <group key={i}>
-            <mesh>
+            <mesh castShadow>
               <torusGeometry args={[radius, 0.03, 12, 48]} />
-              <primitive object={materials.brass} />
+              <primitive object={enhancedMaterials.masterBrass} />
             </mesh>
             
             {/* Planet with moons */}
             <group position={[radius, 0, 0]}>
-              <mesh>
+              <mesh castShadow>
                 <sphereGeometry args={[0.2 + i * 0.08, 16, 16]} />
-                <primitive object={materials.copper} />
+                <primitive object={enhancedMaterials.polishedCopper} />
               </mesh>
               
               {/* Small moon */}
               {i > 1 && (
-                <mesh position={[0.5, 0, 0]}>
+                <mesh position={[0.5, 0, 0]} castShadow>
                   <sphereGeometry args={[0.05, 8, 8]} />
-                  <primitive object={materials.bronze} />
+                  <primitive object={enhancedMaterials.bronze} />
                 </mesh>
               )}
             </group>
 
             {/* Orbital mechanism details */}
-            <mesh position={[radius * 0.7, 0, 0]}>
+            <mesh position={[radius * 0.7, 0, 0]} castShadow>
               <boxGeometry args={[0.1, 0.05, 0.05]} />
-              <primitive object={materials.brass} />
+              <primitive object={enhancedMaterials.masterBrass} />
             </mesh>
           </group>
         ))}
@@ -219,9 +257,9 @@ function BrassOrrery({ position }: { position: [number, number, number] }) {
 
       {/* Outer rotating astronomical ring */}
       <group ref={outerRingRef} position={[0, 4, 0]}>
-        <mesh>
+        <mesh castShadow>
           <torusGeometry args={[8, 0.2, 12, 48]} />
-          <primitive object={materials.darkBrass} />
+          <primitive object={enhancedMaterials.antiqueBrass} />
         </mesh>
         
         {/* Zodiac markers */}
@@ -233,9 +271,10 @@ function BrassOrrery({ position }: { position: [number, number, number] }) {
               0,
               Math.sin((i * Math.PI * 2) / 12) * 8,
             ]}
+            castShadow
           >
             <boxGeometry args={[0.2, 0.4, 0.1]} />
-            <primitive object={materials.brass} />
+            <primitive object={enhancedMaterials.masterBrass} />
           </mesh>
         ))}
       </group>
@@ -246,7 +285,7 @@ function BrassOrrery({ position }: { position: [number, number, number] }) {
   )
 }
 
-// Enhanced antique brass telescope with detailed mechanisms
+// Enhanced antique brass telescope
 function BrassTelescope({ 
   position, 
   rotation = [0, 0, 0] 
@@ -267,17 +306,19 @@ function BrassTelescope({
   })
 
   const materials = useMemo(() => ({
-    brass: new THREE_NAMESPACE.MeshStandardMaterial({
+    brass: new THREE_NAMESPACE.MeshPhysicalMaterial({
       color: "#B8860B",
       metalness: 0.9,
       roughness: 0.2,
+      clearcoat: 0.8,
       emissive: "#8B6914",
       emissiveIntensity: 0.1,
     }),
-    darkBrass: new THREE_NAMESPACE.MeshStandardMaterial({
+    darkBrass: new THREE_NAMESPACE.MeshPhysicalMaterial({
       color: "#8B6914",
       metalness: 0.8,
       roughness: 0.3,
+      clearcoat: 0.6,
     }),
     leather: new THREE_NAMESPACE.MeshStandardMaterial({
       color: "#654321",
@@ -289,44 +330,44 @@ function BrassTelescope({
   return (
     <group ref={telescopeRef} position={position} rotation={rotation}>
       {/* Telescope main tube */}
-      <mesh position={[0, 0, 2.5]}>
+      <mesh position={[0, 0, 2.5]} castShadow receiveShadow>
         <cylinderGeometry args={[0.35, 0.45, 5, 16]} />
         <primitive object={materials.darkBrass} />
       </mesh>
 
       {/* Telescope eyepiece */}
-      <mesh position={[0, 0, -0.5]}>
+      <mesh position={[0, 0, -0.5]} castShadow>
         <cylinderGeometry args={[0.15, 0.15, 1, 12]} />
         <primitive object={materials.brass} />
       </mesh>
 
       {/* Objective lens housing */}
-      <mesh position={[0, 0, 5.2]}>
+      <mesh position={[0, 0, 5.2]} castShadow>
         <cylinderGeometry args={[0.4, 0.35, 0.4, 16]} />
         <primitive object={materials.brass} />
       </mesh>
 
       {/* Focus adjustment mechanism */}
-      <mesh ref={focusRef} position={[0, 0.5, 1]}>
+      <mesh ref={focusRef} position={[0, 0.5, 1]} castShadow>
         <cylinderGeometry args={[0.2, 0.2, 0.3, 8]} />
         <primitive object={materials.brass} />
       </mesh>
 
       {/* Telescope mount base */}
-      <mesh position={[0, -0.8, 0]}>
+      <mesh position={[0, -0.8, 0]} castShadow receiveShadow>
         <boxGeometry args={[1.2, 1.5, 1.2]} />
         <primitive object={materials.leather} />
       </mesh>
 
       {/* Brass mounting hardware */}
-      <mesh position={[0, -0.2, 0]}>
+      <mesh position={[0, -0.2, 0]} castShadow>
         <sphereGeometry args={[0.3, 12, 12]} />
         <primitive object={materials.brass} />
       </mesh>
 
       {/* Adjustment knobs */}
       {[-0.6, 0.6].map((x, i) => (
-        <mesh key={i} position={[x, 0, 0]}>
+        <mesh key={i} position={[x, 0, 0]} castShadow>
           <cylinderGeometry args={[0.1, 0.1, 0.2, 8]} />
           <primitive object={materials.brass} />
         </mesh>
@@ -349,22 +390,25 @@ function FloatingInstruments() {
   ], [])
 
   const materials = useMemo(() => ({
-    brass: new THREE_NAMESPACE.MeshStandardMaterial({
+    brass: new THREE_NAMESPACE.MeshPhysicalMaterial({
       color: "#B8860B",
       metalness: 0.9,
       roughness: 0.2,
+      clearcoat: 0.8,
       emissive: "#8B6914",
       emissiveIntensity: 0.1,
     }),
-    copper: new THREE_NAMESPACE.MeshStandardMaterial({
+    copper: new THREE_NAMESPACE.MeshPhysicalMaterial({
       color: "#B87333",
       metalness: 0.8,
       roughness: 0.3,
+      clearcoat: 0.7,
     }),
-    bronze: new THREE_NAMESPACE.MeshStandardMaterial({
+    bronze: new THREE_NAMESPACE.MeshPhysicalMaterial({
       color: "#CD7F32",
       metalness: 0.85,
       roughness: 0.25,
+      clearcoat: 0.75,
     }),
   }), [])
 
@@ -380,15 +424,15 @@ function FloatingInstruments() {
           <group position={instrument.pos} scale={instrument.scale}>
             {instrument.type === "astrolabe" && (
               <group>
-                <mesh>
+                <mesh castShadow>
                   <torusGeometry args={[1, 0.12, 12, 32]} />
                   <primitive object={materials.brass} />
                 </mesh>
-                <mesh>
+                <mesh castShadow>
                   <torusGeometry args={[0.7, 0.08, 8, 24]} />
                   <primitive object={materials.copper} />
                 </mesh>
-                <mesh>
+                <mesh castShadow>
                   <cylinderGeometry args={[0.05, 0.05, 0.3, 8]} />
                   <primitive object={materials.bronze} />
                 </mesh>
@@ -397,11 +441,11 @@ function FloatingInstruments() {
             
             {instrument.type === "compass" && (
               <group>
-                <mesh>
+                <mesh castShadow>
                   <cylinderGeometry args={[0.8, 0.8, 0.25, 20]} />
                   <primitive object={materials.brass} />
                 </mesh>
-                <mesh position={[0, 0.15, 0]}>
+                <mesh position={[0, 0.15, 0]} castShadow>
                   <cylinderGeometry args={[0.02, 0.02, 0.6, 8]} />
                   <primitive object={materials.bronze} />
                 </mesh>
@@ -410,19 +454,19 @@ function FloatingInstruments() {
 
             {instrument.type === "armillary" && (
               <group>
-                <mesh>
+                <mesh castShadow>
                   <torusGeometry args={[1.2, 0.06, 12, 32]} />
                   <primitive object={materials.copper} />
                 </mesh>
-                <mesh rotation={[Math.PI / 2, 0, 0]}>
+                <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
                   <torusGeometry args={[1.2, 0.06, 12, 32]} />
                   <primitive object={materials.copper} />
                 </mesh>
-                <mesh rotation={[0, 0, Math.PI / 4]}>
+                <mesh rotation={[0, 0, Math.PI / 4]} castShadow>
                   <torusGeometry args={[1.2, 0.06, 12, 32]} />
                   <primitive object={materials.copper} />
                 </mesh>
-                <mesh>
+                <mesh castShadow>
                   <sphereGeometry args={[0.15, 12, 12]} />
                   <primitive object={materials.brass} />
                 </mesh>
@@ -431,11 +475,11 @@ function FloatingInstruments() {
 
             {instrument.type === "sextant" && (
               <group>
-                <mesh>
+                <mesh castShadow>
                   <cylinderGeometry args={[0.8, 0.8, 0.1, 6, 1, false, 0, Math.PI]} />
                   <primitive object={materials.brass} />
                 </mesh>
-                <mesh position={[0, 0, 0.4]}>
+                <mesh position={[0, 0, 0.4]} castShadow>
                   <cylinderGeometry args={[0.05, 0.05, 0.8, 8]} />
                   <primitive object={materials.bronze} />
                 </mesh>
@@ -444,7 +488,7 @@ function FloatingInstruments() {
 
             {instrument.type === "quadrant" && (
               <group>
-                <mesh>
+                <mesh castShadow>
                   <cylinderGeometry args={[1, 1, 0.1, 16, 1, false, 0, Math.PI / 2]} />
                   <primitive object={materials.brass} />
                 </mesh>
@@ -453,11 +497,11 @@ function FloatingInstruments() {
 
             {instrument.type === "sundial" && (
               <group>
-                <mesh>
+                <mesh castShadow>
                   <cylinderGeometry args={[0.8, 0.8, 0.1, 16]} />
                   <primitive object={materials.copper} />
                 </mesh>
-                <mesh position={[0, 0.3, 0]} rotation={[0, 0, Math.PI / 6]}>
+                <mesh position={[0, 0.3, 0]} rotation={[0, 0, Math.PI / 6]} castShadow>
                   <coneGeometry args={[0.05, 0.6, 8]} />
                   <primitive object={materials.bronze} />
                 </mesh>
@@ -470,27 +514,28 @@ function FloatingInstruments() {
   )
 }
 
-// Enhanced Gothic observatory architecture with better dome lighting
+// Enhanced Gothic observatory architecture
 function ObservatoryArchitecture() {
   const materials = useMemo(() => ({
     lightStone: new THREE_NAMESPACE.MeshStandardMaterial({
-      color: "#5A5A5A", // Lighter stone color
-      roughness: 0.7,
+      color: "#6A6A6A",
+      roughness: 0.6,
       metalness: 0.15,
-      emissive: "#3A3A3A", // Added subtle emissive
-      emissiveIntensity: 0.05,
+      emissive: "#4A4A4A",
+      emissiveIntensity: 0.08,
     }),
     stone: new THREE_NAMESPACE.MeshStandardMaterial({
-      color: "#4A4A4A", // Lighter than before
-      roughness: 0.8,
+      color: "#5A5A5A",
+      roughness: 0.7,
       metalness: 0.1,
-      emissive: "#2A2A2A",
-      emissiveIntensity: 0.03,
+      emissive: "#3A3A3A",
+      emissiveIntensity: 0.05,
     }),
-    brass: new THREE_NAMESPACE.MeshStandardMaterial({
+    brass: new THREE_NAMESPACE.MeshPhysicalMaterial({
       color: "#B8860B",
       metalness: 0.9,
       roughness: 0.2,
+      clearcoat: 0.8,
       emissive: "#8B6914",
       emissiveIntensity: 0.15,
     }),
@@ -499,25 +544,25 @@ function ObservatoryArchitecture() {
       roughness: 0.3,
       metalness: 0.2,
       emissive: "#E6E6DC",
-      emissiveIntensity: 0.05,
+      emissiveIntensity: 0.08,
     }),
   }), [])
 
   return (
     <group>
-      {/* Enhanced main observatory dome with better lighting */}
-      <mesh position={[0, 10, 0]}>
+      {/* Enhanced main observatory dome */}
+      <mesh position={[0, 10, 0]} castShadow receiveShadow>
         <sphereGeometry args={[14, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2]} />
         <primitive object={materials.lightStone} />
       </mesh>
 
       {/* Dome opening mechanism with brass details */}
-      <mesh position={[0, 12, 7]}>
+      <mesh position={[0, 12, 7]} castShadow>
         <boxGeometry args={[4, 2, 0.5]} />
         <primitive object={materials.brass} />
       </mesh>
 
-      {/* Additional dome lighting strips */}
+      {/* Enhanced dome lighting strips */}
       {Array.from({ length: 8 }).map((_, i) => (
         <mesh
           key={i}
@@ -527,12 +572,13 @@ function ObservatoryArchitecture() {
             Math.sin((i * Math.PI * 2) / 8) * 12,
           ]}
           rotation={[0, (i * Math.PI * 2) / 8, 0]}
+          castShadow
         >
           <boxGeometry args={[2, 0.3, 0.2]} />
           <meshStandardMaterial 
             color="#DAA520" 
             emissive="#B8860B" 
-            emissiveIntensity={0.4}
+            emissiveIntensity={0.5}
           />
         </mesh>
       ))}
@@ -544,25 +590,25 @@ function ObservatoryArchitecture() {
           rotation={[0, (i * Math.PI * 2) / 12, 0]}
         >
           {/* Main arch columns */}
-          <mesh position={[12, 4, 0]}>
+          <mesh position={[12, 4, 0]} castShadow receiveShadow>
             <cylinderGeometry args={[0.6, 0.6, 8, 16]} />
             <primitive object={materials.stone} />
           </mesh>
 
           {/* Column capitals */}
-          <mesh position={[12, 8.5, 0]}>
+          <mesh position={[12, 8.5, 0]} castShadow>
             <cylinderGeometry args={[0.8, 0.6, 1, 16]} />
             <primitive object={materials.marble} />
           </mesh>
 
           {/* Gothic arch */}
-          <mesh position={[12, 7.5, 0]}>
+          <mesh position={[12, 7.5, 0]} castShadow receiveShadow>
             <cylinderGeometry args={[1, 1, 1.5, 16, 1, false, 0, Math.PI]} />
             <primitive object={materials.stone} />
           </mesh>
 
           {/* Brass gear mechanisms on arches */}
-          <mesh position={[12, 6, 1.2]}>
+          <mesh position={[12, 6, 1.2]} castShadow>
             <cylinderGeometry args={[0.5, 0.5, 0.3, 16]} />
             <primitive object={materials.brass} />
           </mesh>
@@ -576,6 +622,7 @@ function ObservatoryArchitecture() {
                 6,
                 1.2 + Math.sin((j * Math.PI * 2) / 8) * 0.6,
               ]}
+              castShadow
             >
               <boxGeometry args={[0.1, 0.3, 0.1]} />
               <primitive object={materials.brass} />
@@ -585,23 +632,23 @@ function ObservatoryArchitecture() {
       ))}
 
       {/* Central floor with intricate patterns */}
-      <mesh position={[0, -0.1, 0]}>
+      <mesh position={[0, -0.1, 0]} receiveShadow>
         <cylinderGeometry args={[16, 16, 0.2, 48]} />
         <primitive object={materials.stone} />
       </mesh>
 
       {/* Ornate floor patterns */}
-      <mesh position={[0, 0, 0]}>
+      <mesh position={[0, 0, 0]} castShadow>
         <torusGeometry args={[10, 0.15, 12, 48]} />
         <primitive object={materials.brass} />
       </mesh>
 
-      <mesh position={[0, 0.05, 0]}>
+      <mesh position={[0, 0.05, 0]} castShadow>
         <torusGeometry args={[6, 0.1, 12, 48]} />
         <primitive object={materials.brass} />
       </mesh>
 
-      <mesh position={[0, 0.1, 0]}>
+      <mesh position={[0, 0.1, 0]} castShadow>
         <torusGeometry args={[3, 0.08, 12, 48]} />
         <primitive object={materials.brass} />
       </mesh>
@@ -616,6 +663,7 @@ function ObservatoryArchitecture() {
             Math.sin((i * Math.PI * 2) / 8) * 8,
           ]}
           rotation={[-Math.PI / 2, 0, 0]}
+          castShadow
         >
           <cylinderGeometry args={[0.5, 0.5, 0.1, 6]} />
           <primitive object={materials.brass} />
@@ -631,7 +679,7 @@ function BrassSconce({ position }: { position: [number, number, number] }) {
 
   useFrame((state) => {
     if (flameRef.current) {
-      const flicker = Math.sin(state.clock.elapsedTime * 8) * 0.1 + 1
+      const flicker = Math.sin(state.clock.elapsedTime * 8) * 0.15 + 1
       flameRef.current.scale.setScalar(flicker)
     }
   })
@@ -639,40 +687,59 @@ function BrassSconce({ position }: { position: [number, number, number] }) {
   return (
     <group position={position}>
       {/* Ornate sconce base */}
-      <mesh>
+      <mesh castShadow>
         <cylinderGeometry args={[0.3, 0.4, 0.8, 12]} />
-        <meshStandardMaterial color="#8B6914" metalness={0.8} roughness={0.3} />
+        <meshPhysicalMaterial 
+          color="#8B6914" 
+          metalness={0.8} 
+          roughness={0.3}
+          clearcoat={0.6}
+        />
       </mesh>
 
       {/* Decorative sconce details */}
-      <mesh position={[0, 0.5, 0]}>
+      <mesh position={[0, 0.5, 0]} castShadow>
         <torusGeometry args={[0.35, 0.05, 8, 16]} />
-        <meshStandardMaterial color="#B8860B" metalness={0.9} roughness={0.2} />
+        <meshPhysicalMaterial 
+          color="#B8860B" 
+          metalness={0.9} 
+          roughness={0.2}
+          clearcoat={0.8}
+        />
       </mesh>
 
       {/* Candle */}
-      <mesh position={[0, 0.8, 0]}>
+      <mesh position={[0, 0.8, 0]} castShadow>
         <cylinderGeometry args={[0.08, 0.08, 1.2, 12]} />
         <meshStandardMaterial color="#F5DEB3" roughness={0.8} metalness={0.1} />
       </mesh>
 
-      {/* Flickering flame */}
+      {/* Enhanced flickering flame */}
       <mesh ref={flameRef} position={[0, 1.5, 0]}>
         <sphereGeometry args={[0.15, 8, 8]} />
         <meshStandardMaterial 
           color="#DAA520" 
           emissive="#FFD700" 
-          emissiveIntensity={0.9}
+          emissiveIntensity={1.2}
           transparent
-          opacity={0.8}
+          opacity={0.9}
         />
       </mesh>
 
       {/* Wax drips */}
-      <mesh position={[0.05, 0.6, 0]}>
+      <mesh position={[0.05, 0.6, 0]} castShadow>
         <sphereGeometry args={[0.03, 6, 6]} />
         <meshStandardMaterial color="#F5DEB3" roughness={0.9} metalness={0.1} />
       </mesh>
+
+      {/* Point light for each sconce */}
+      <pointLight
+        position={[0, 1.5, 0]}
+        intensity={0.8}
+        distance={8}
+        decay={2}
+        color="#FF6347"
+      />
     </group>
   )
 }
@@ -691,21 +758,16 @@ function SteampunkObservatory() {
       <BrassTelescope position={[-8, 3, 8]} rotation={[0.3, 2.3, 0]} />
 
       <FloatingInstruments />
-
-      {/* Enhanced atmospheric effects */}
-      <ObservatoryMist position={[0, 3, 0]} />
-      <ObservatoryMist position={[-8, 4, -8]} />
-      <ObservatoryMist position={[8, 4, 8]} />
-      <ObservatoryMist position={[0, 8, -12]} />
+      <EnhancedAtmosphere />
 
       {/* Brass sconces for ambient lighting */}
-      {Array.from({ length: 8 }).map((_, i) => (
+      {Array.from({ length: 12 }).map((_, i) => (
         <BrassSconce
           key={i}
           position={[
-            Math.cos((i * Math.PI * 2) / 8) * 11,
+            Math.cos((i * Math.PI * 2) / 12) * 11,
             5,
-            Math.sin((i * Math.PI * 2) / 8) * 11,
+            Math.sin((i * Math.PI * 2) / 12) * 11,
           ]}
         />
       ))}
@@ -725,58 +787,80 @@ function SteampunkObservatory() {
   )
 }
 
-// Enhanced hero text for observatory theme
+// Enhanced hero text
 function ObservatoryHeroText() {
   return (
     <Float speed={0.6} rotationIntensity={0.02} floatIntensity={0.1}>
       <group position={[0, 18, 20]}>
-        {/* DIVERSION title */}
-        <mesh position={[-1, 0, 0]}>
+        {/* OBSERVATORY title */}
+        <mesh position={[-1, 0, 0]} castShadow>
           <boxGeometry args={[9, 2, 0.8]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color="#B8860B"
             metalness={0.8}
             roughness={0.2}
+            clearcoat={0.8}
             emissive="#8B6914"
-            emissiveIntensity={0.25}
+            emissiveIntensity={0.3}
           />
         </mesh>
 
         {/* 2026 subtitle */}
-        <mesh position={[0.5, -3, 0]}>
+        <mesh position={[0.5, -3, 0]} castShadow>
           <boxGeometry args={[6, 1.5, 0.6]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color="#8B6914"
             metalness={0.7}
             roughness={0.3}
+            clearcoat={0.6}
             emissive="#654321"
-            emissiveIntensity={0.2}
+            emissiveIntensity={0.25}
           />
         </mesh>
 
         {/* Decorative brass elements */}
-        <mesh position={[-7, 0, 0]}>
+        <mesh position={[-7, 0, 0]} castShadow>
           <torusGeometry args={[0.5, 0.12, 12, 24]} />
-          <meshStandardMaterial color="#B87333" metalness={0.8} roughness={0.3} />
+          <meshPhysicalMaterial 
+            color="#B87333" 
+            metalness={0.8} 
+            roughness={0.3}
+            clearcoat={0.7}
+          />
         </mesh>
 
-        <mesh position={[7, 0, 0]}>
+        <mesh position={[7, 0, 0]} castShadow>
           <torusGeometry args={[0.5, 0.12, 12, 24]} />
-          <meshStandardMaterial color="#B87333" metalness={0.8} roughness={0.3} />
+          <meshPhysicalMaterial 
+            color="#B87333" 
+            metalness={0.8} 
+            roughness={0.3}
+            clearcoat={0.7}
+          />
         </mesh>
 
         {/* Floating gear decorations */}
         <Float speed={1} rotationIntensity={0.5} floatIntensity={0.2}>
-          <mesh position={[-10, 2, 0]}>
+          <mesh position={[-10, 2, 0]} castShadow>
             <cylinderGeometry args={[0.8, 0.8, 0.2, 12]} />
-            <meshStandardMaterial color="#CD7F32" metalness={0.9} roughness={0.2} />
+            <meshPhysicalMaterial 
+              color="#CD7F32" 
+              metalness={0.9} 
+              roughness={0.2}
+              clearcoat={0.8}
+            />
           </mesh>
         </Float>
 
         <Float speed={1.2} rotationIntensity={0.4} floatIntensity={0.3}>
-          <mesh position={[10, -1, 0]}>
+          <mesh position={[10, -1, 0]} castShadow>
             <cylinderGeometry args={[0.6, 0.6, 0.15, 8]} />
-            <meshStandardMaterial color="#CD7F32" metalness={0.9} roughness={0.2} />
+            <meshPhysicalMaterial 
+              color="#CD7F32" 
+              metalness={0.9} 
+              roughness={0.2}
+              clearcoat={0.8}
+            />
           </mesh>
         </Float>
       </group>
@@ -811,77 +895,108 @@ export default function Hero3D() {
         }
       `}</style>
 
-      <Canvas camera={{ position: [0, 15, 30], fov: 65 }} shadows>
+      <Canvas 
+        camera={{ position: [0, 15, 30], fov: 65 }} 
+        shadows
+        gl={{ 
+          antialias: true, 
+          alpha: false,
+          powerPreference: "high-performance",
+          stencil: false,
+          depth: true
+        }}
+        dpr={[1, 2]}
+      >
         <Suspense fallback={null}>
-          {/* Enhanced atmospheric lighting */}
-          <ambientLight intensity={0.25} color="#8B7D6B" />
+          {/* Revolutionary lighting system */}
+          <ambientLight intensity={0.5} color="#8B7D6B" />
 
-          {/* Dome interior lighting - KEY ENHANCEMENT */}
-          <pointLight position={[0, 18, 0]} intensity={1.8} color="#DAA520" />
-          <pointLight position={[0, 16, 8]} intensity={1.2} color="#B8860B" />
-          <pointLight position={[8, 16, 0]} intensity={1.0} color="#CD853F" />
-          <pointLight position={[-8, 16, 0]} intensity={1.0} color="#CD853F" />
-          <pointLight position={[0, 16, -8]} intensity={1.0} color="#B8860B" />
+          {/* Key Light - Main observatory illumination */}
+          <directionalLight 
+            position={[0, 35, 15]} 
+            intensity={2.0} 
+            color="#FFD700" 
+            castShadow
+            shadow-mapSize={[8192, 8192]}
+            shadow-camera-far={150}
+            shadow-camera-left={-80}
+            shadow-camera-right={80}
+            shadow-camera-top={80}
+            shadow-camera-bottom={-80}
+          />
+
+          {/* Rim lighting for dramatic silhouettes */}
+          <directionalLight 
+            position={[-30, 20, -30]} 
+            intensity={1.5} 
+            color="#4169E1" 
+          />
+
+          {/* Volumetric lighting through dome opening */}
+          <spotLight
+            position={[0, 30, 0]}
+            angle={0.3}
+            penumbra={0.5}
+            intensity={3.0}
+            color="#DAA520"
+            castShadow
+            target-position={[0, 0, 0]}
+          />
+
+          {/* Mystical underglow */}
+          <pointLight position={[0, -2, 0]} intensity={1.5} color="#9370DB" />
+
+          {/* Enhanced dome interior lighting */}
+          <pointLight position={[0, 18, 0]} intensity={2.8} color="#DAA520" />
+          <pointLight position={[0, 16, 8]} intensity={2.0} color="#B8860B" />
+          <pointLight position={[8, 16, 0]} intensity={1.8} color="#CD853F" />
+          <pointLight position={[-8, 16, 0]} intensity={1.8} color="#CD853F" />
+          <pointLight position={[0, 16, -8]} intensity={1.8} color="#B8860B" />
 
           {/* Focused candle lighting from sconces */}
-          <pointLight position={[0, 10, 0]} intensity={1.5} color="#DAA520" castShadow />
-          <pointLight position={[-10, 8, -10]} intensity={0.8} color="#B8860B" />
-          <pointLight position={[10, 8, -10]} intensity={0.8} color="#B8860B" />
-          <pointLight position={[0, 12, 12]} intensity={0.7} color="#CD853F" />
-
-          {/* Enhanced directional lighting for dome */}
-          <directionalLight 
-            position={[0, 25, 0]} 
-            intensity={0.8} 
-            color="#DAA520" 
-            castShadow
-            shadow-mapSize={[4096, 4096]}
-            shadow-camera-far={100}
-            shadow-camera-left={-50}
-            shadow-camera-right={50}
-            shadow-camera-top={50}
-            shadow-camera-bottom={-50}
-          />
-
-          {/* Subtle directional moonlight */}
-          <directionalLight 
-            position={[25, 30, 20]} 
-            intensity={0.4} 
-            color="#B0C4DE" 
-            castShadow
-          />
+          <pointLight position={[0, 10, 0]} intensity={2.5} color="#DAA520" castShadow />
 
           {/* Additional atmospheric lighting */}
-          <pointLight position={[-15, 6, 8]} intensity={0.6} color="#8B6914" />
-          <pointLight position={[15, 6, -8]} intensity={0.6} color="#8B6914" />
+          <pointLight position={[-15, 6, 8]} intensity={1.0} color="#8B6914" />
+          <pointLight position={[15, 6, -8]} intensity={1.0} color="#8B6914" />
 
           {/* Hemisphere light for overall illumination */}
-          <hemisphereLight args={["#DAA520", "#654321", 0.4]} />
+          <hemisphereLight args={["#DAA520", "#654321", 0.8]} />
 
-          {/* Lighter atmospheric fog */}
-          <fog attach="fog" args={["#2a2a2a", 20, 65]} />
+          {/* Enhanced atmospheric fog */}
+          <fog attach="fog" args={["#1a1a2e", 25, 80]} />
 
-          {/* Enhanced starry sky */}
-          <Stars radius={120} depth={60} count={1500} factor={5} saturation={0} fade />
+          {/* Multi-layered enhanced starry sky */}
+          <Stars radius={200} depth={100} count={3000} factor={6} saturation={0} fade />
+          <Stars radius={150} depth={80} count={2000} factor={4} saturation={0.1} fade />
+          <Stars radius={100} depth={60} count={1500} factor={3} saturation={0.2} fade />
+
+          {/* Environment mapping for realistic reflections */}
+          <Environment preset="night" background={false} />
 
           <SteampunkObservatory />
           <ObservatoryHeroText />
 
-          {/* Enhanced particle effects */}
+          {/* Enhanced particle effects with twinkling stars */}
+          <Sparkles count={400} scale={150} size={2.0} speed={0.01} color="#E6E6FA" opacity={0.8} />
+          <Sparkles count={300} scale={120} size={1.5} speed={0.015} color="#F0F8FF" opacity={0.6} />
+          <Sparkles count={200} scale={80} size={1.0} speed={0.008} color="#FFFACD" opacity={0.4} />
           <Sparkles count={250} scale={90} size={1.5} speed={0.02} color="#B8860B" opacity={0.5} />
           <Sparkles count={150} scale={50} size={1.0} speed={0.012} color="#8B7D6B" opacity={0.6} />
-          <Sparkles count={100} scale={25} size={0.8} speed={0.008} color="#CD853F" opacity={0.4} />
 
+          {/* Enhanced OrbitControls */}
           <OrbitControls
             enableZoom={true}
             enablePan={true}
             autoRotate
-            autoRotateSpeed={0.15}
-            maxPolarAngle={Math.PI / 2.3}
-            minPolarAngle={Math.PI / 15}
-            minDistance={18}
-            maxDistance={60}
-            target={[0, 6, 0]}
+            autoRotateSpeed={0.2}
+            maxPolarAngle={Math.PI / 2.1}
+            minPolarAngle={Math.PI / 12}
+            minDistance={15}
+            maxDistance={70}
+            target={[0, 8, 0]}
+            enableDamping={true}
+            dampingFactor={0.05}
           />
         </Suspense>
       </Canvas>

@@ -7,9 +7,9 @@ import { Cinzel } from 'next/font/google'
 const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '500', '600', '700'] })
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.dev',
+  title: 'Diversion',
+  description: 'Welcome to Diversion - Your Ultimate Event Experience',
+  generator: 'Diversion',
 }
 
 export default function RootLayout({
